@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.3/vue.js"></script>
+<script src="moment.js"></script>
+</head>
+<body>
+<div class="container" id="todo">
+	<div class="toggle">
+		<button v-bind:class="{active: inEntryMode}" v-on:click="toggleEntryMode(true)">Tasks</button><!--
+ --><button v-bind:class="{active: !inEntryMode, faded: (taskList.length==0) }" v-on:click="if (taskList.length>0) toggleEntryMode(false)">Timer</button>
+	</div>
+	<div id="entrypage" v-if="inEntryMode">
+		<section class="panel">
+				<input type="text" v-model="newTime" class="time-input" @keydown.enter="addTask">
+				<input type="text" placeholder="enter a task" autofocus class="text-input"
+						v-model="newTask" @keydown.enter="addTask">
+		</section>
+		<section class="items">
+			<ul class="list">
+				<li v-for="task in taskList" v-bind:class="{done: task.checked}" v-bind:style="{ backgroundColor: task.color }">
+					<div>
+						<button v-on:click="removeTask(task)">X</button>
+					</div>
+					<div>
+						<div class="dropdown" v-bind:class="{ picking: task.colorBeingPicked }">
+								<button class="pickcolor" v-on:click="task.colorBeingPicked = !(task.colorBeingPicked)">
+									<span v-bind:style="{ backgroundColor: task.color }">&nbsp;</span>
+								</button> 
+								<div class="dropdown-content">
+										<a v-for="c in colorOptions" v-bind:style="{ backgroundColor: c }" v-on:click="colorChosen(task, c)">&nbsp;</a>
+								</div> 
+						</div>
+					</div>
+					<div class="time">{{ task.time }}</div>
+					<div class="task">{{ task.text }}</div>
+				</li>
+			</ul>
+		</section>
+	</div><!-- entrypage -->
+	<div id="runpage" v-if="!inEntryMode">
+		<div class="tasklabel" v-bind:style="{ color: color }">
+			{{ item }}
+		</div>
+		<div class="taskduration" v-bind:style="{ color: color }" v-if="index != -1">
+			<span v-if="hours > 0">{{ hours }}h </span>
+			<span v-if="minutes > 0">{{ minutes }}m </span>
+			{{ seconds }}s
+		</div>
+	</div>
+</div>
+</body>
+<script src="app.js"></script>
+</html>
+
